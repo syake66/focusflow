@@ -1,7 +1,7 @@
 {
-  "name": "FocusFlow - ADHDタスクマネージャー",
+  "name": "FocusFlow - 集中をデザインする",
   "short_name": "FocusFlow",
-  "description": "ADHDの特性に寄り添う、シンプルなタスク管理アプリ",
+  "description": "シンプルで直感的なタスク管理アプリ",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0e1a",
