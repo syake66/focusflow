@@ -1040,3 +1040,36 @@ body {
   60%  { opacity: 1; }
   100% { transform: translate(calc(-50% + var(--ex)), calc(-50% + var(--ey))) scale(1) rotate(var(--er)); opacity: 0; }
 }
+
+/* ---- モバイル向けレスポンシブ ---- */
+@media (max-width: 600px) {
+  /* タブナビの窮屈さを解消 */
+  .tab-btn {
+    padding: 10px 4px;
+    font-size: 0.8rem;
+    gap: 4px;
+  }
+  
+  /* クイック入力欄の折り返し */
+  .quick-add-sub {
+    flex-wrap: wrap;
+    gap: 10px 15px;
+  }
+  
+  /* モーダルのパディングを少し狭く */
+  .modal-content {
+    padding: 20px 16px;
+    max-height: 90vh;
+  }
+
+  /* スマホだと優先度が横並びできつい場合があるので、小さくするか縦並びに */
+  .priority-option {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+  }
+  
+  /* タスクカードの左右の余白を少し縮める */
+  .task-card {
+    padding: 12px 10px;
+  }
+}
