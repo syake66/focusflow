@@ -12,8 +12,26 @@
   <meta name="apple-mobile-web-app-title" content="FocusFlow">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
+
+<!-- ログイン画面 -->
+<div id="login-screen" class="login-screen">
+  <div class="login-content">
+    <div class="login-logo">⚡ FocusFlow</div>
+    <h1>ADHDの特性を、<br>あなたの強みに。</h1>
+    <p>シンプルで直感的なタスク管理。どのデバイスからでも。ログインして始めましょう。</p>
+    <button id="google-login-btn" class="login-btn">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Googleでログイン
+    </button>
+  </div>
+</div>
 
 <!-- 紙吹雪コンテナ -->
 <div id="confetti-container" class="confetti-container"></div>
@@ -33,7 +51,7 @@
 
 
 <!-- メインアプリ -->
-<div class="app-wrapper">
+<div class="app-wrapper" id="app-wrapper" style="display: none;">
 
   <!-- ヘッダー（スマホのステータスバー余白用） -->
   <header class="app-header"></header>

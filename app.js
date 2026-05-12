@@ -1,19 +1,117 @@
 /* =====================================================
-   FocusFlow - アプリメインロジック
+   FocusFlow - アプリメインロジック (Firebase版)
    ===================================================== */
 
-/* ---- データ管理 ---- */
+// Firebase 設定
+const firebaseConfig = {
+  apiKey: "AIzaSyCRg2HjKyWZeqh4wZuLevO8BSmNHpQ1kfI",
+  authDomain: "focus-21fb0.firebaseapp.com",
+  projectId: "focus-21fb0",
+  storageBucket: "focus-21fb0.firebasestorage.app",
+  messagingSenderId: "163433322038",
+  appId: "1:163433322038:web:21a1059971bf414f6e6a97",
+  measurementId: "G-VZBLWCK8XK"
+};
 
-/** ローカルストレージからタスクを読み込む */
-function loadTasks() {
+// Firebase 初期化
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
+let currentTasks = []; // 現在のタスクリスト（メモリ保持用）
+
+/* ---- 認証・初期化ロジック ---- */
+
+// ログイン状態の監視
+auth.onAuthStateChanged(async (user) => {
+  const loginScreen = document.getElementById('login-screen');
+  const appWrapper = document.getElementById('app-wrapper');
+
+  if (user) {
+    currentUser = user;
+    console.log("Logged in as:", user.email);
+    
+    // ログイン成功: UI切り替え
+    loginScreen.style.display = 'none';
+    appWrapper.style.display = 'block';
+
+    // データの読み込みと移行チェック
+    await syncTasks();
+    
+    // 通知スケジュールを再設定
+    rescheduleAllNotifications();
+  } else {
+    currentUser = null;
+    currentTasks = [];
+    loginScreen.style.display = 'flex';
+    appWrapper.style.display = 'none';
+  }
+});
+
+// Googleログイン実行
+async function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
   try {
-    return JSON.parse(localStorage.getItem('focusflow_tasks') || '[]');
-  } catch { return []; }
+    await auth.signInWithPopup(provider);
+  } catch (error) {
+    console.error("Login failed:", error);
+    alert("ログインに失敗しました。");
+  }
 }
 
-/** タスクをローカルストレージに保存する */
-function saveTasks(tasks) {
-  localStorage.setItem('focusflow_tasks', JSON.stringify(tasks));
+// ログアウト実行（必要ならデバッグ用に）
+function logout() {
+  auth.signOut();
+}
+
+// ボタンにイベント割り当て
+document.getElementById('google-login-btn').addEventListener('click', signInWithGoogle);
+
+/* ---- データ管理 (Firestore) ---- */
+
+/** Firestoreと同期する */
+async function syncTasks() {
+  if (!currentUser) return;
+
+  const docRef = db.collection('users').doc(currentUser.uid);
+  const doc = await docRef.get();
+
+  // 1. LocalStorageに古いデータがあるか確認（移行用）
+  const localData = localStorage.getItem('focusflow_tasks');
+  
+  if (!doc.exists && localData) {
+    // DBにデータがなく、ローカルにデータがある場合 -> 初回移行
+    console.log("Migrating local data to Firestore...");
+    const tasks = JSON.parse(localData);
+    await docRef.set({ tasks: tasks });
+    currentTasks = tasks;
+    // 移行完了後はLocalデータを消すか、フラグを立てる（ここでは安全のため名前を変えて残す）
+    localStorage.setItem('focusflow_migrated_backup', localData);
+    localStorage.removeItem('focusflow_tasks');
+  } else if (doc.exists) {
+    // DBにデータがある場合
+    currentTasks = doc.data().tasks || [];
+  } else {
+    // どちらも空の場合
+    currentTasks = [];
+  }
+
+  renderCurrentTab();
+}
+
+/** 現在のタスクリストを取得（メモリから） */
+function loadTasks() {
+  return currentTasks;
+}
+
+/** タスクをFirestoreとメモリに保存する */
+async function saveTasks(tasks) {
+  currentTasks = tasks;
+  if (currentUser) {
+    await db.collection('users').doc(currentUser.uid).set({ tasks: tasks }, { merge: true });
+  }
+  renderCurrentTab();
 }
 
 /** 新しいタスクオブジェクトを生成する */
@@ -22,9 +120,9 @@ function createTask({ title, note = '', deadline = null, priority = 'mid', notif
     id: crypto.randomUUID(),
     title,
     note,
-    deadline,       // ISO文字列 or null
-    priority,       // 'high' | 'mid' | 'low'
-    notifications,  // ['3d','1d','3h','1h','morning']
+    deadline,
+    priority,
+    notifications,
     completed: false,
     postponeCount: 0,
     postponeLog: [],
@@ -842,14 +940,8 @@ async function init() {
   // Service Worker登録
   await registerServiceWorker();
 
-  // 通知スケジュールを再設定
-  rescheduleAllNotifications();
-
   // 1分ごとに期限チェック（表示更新）
   setInterval(renderCurrentTab, 60 * 1000);
-
-  // 初期描画
-  renderCurrentTab();
 
   // イベントリスナーを設定
   setupEventListeners();
