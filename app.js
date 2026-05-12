@@ -122,17 +122,23 @@ function getDeadlineLabel(deadline) {
   const now = new Date();
   const dl = new Date(deadline);
   const diffMs = dl - now;
-  const diffH = diffMs / (1000 * 60 * 60);
-  const diffD = diffMs / (1000 * 60 * 60 * 24);
+  
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const target = new Date(dl.getFullYear(), dl.getMonth(), dl.getDate());
+  const diffDays = Math.round((target - today) / 86400000);
 
   if (diffMs < 0) return { text: '期限切れ', cls: 'deadline-urgent' };
-  if (diffH < 1) return { text: `あと${Math.ceil(diffMs / 60000)}分`, cls: 'deadline-urgent' };
-  if (diffH < 3) return { text: `あと${Math.ceil(diffH)}時間`, cls: 'deadline-urgent' };
-  if (diffH < 24) return { text: `今日中（あと${Math.floor(diffH)}時間）`, cls: 'deadline-soon' };
-  if (diffD < 2) return { text: '明日まで', cls: 'deadline-soon' };
-  if (diffD < 7) return { text: `あと${Math.floor(diffD)}日`, cls: 'deadline-ok' };
-
-  return { text: `${dl.getMonth()+1}/${dl.getDate()}まで`, cls: '' };
+  
+  if (diffDays === 0) {
+    const diffH = diffMs / (1000 * 60 * 60);
+    if (diffH < 1) return { text: `今日（あと${Math.ceil(diffMs / 60000)}分）`, cls: 'deadline-urgent' };
+    if (diffH < 3) return { text: `今日（あと${Math.ceil(diffH)}時間）`, cls: 'deadline-urgent' };
+    return { text: `今日`, cls: 'deadline-soon' };
+  }
+  
+  if (diffDays === 1) return { text: '明日', cls: 'deadline-soon' };
+  if (diffDays === 2) return { text: '明後日', cls: 'deadline-ok' };
+  return { text: `${diffDays}日後`, cls: 'deadline-ok' };
 }
 
 /** 今日のタスクかどうか判定する */
@@ -142,6 +148,14 @@ function isToday(task) {
   const dl = new Date(task.deadline);
   return dl.toDateString() === today.toDateString() ||
     dl < new Date(today.setHours(0,0,0,0) + 86400000);
+}
+
+/** 今日完了したタスクかどうか判定する */
+function isCompletedToday(task) {
+  if (!task.completed || !task.completedAt) return false;
+  const today = new Date();
+  const compDate = new Date(task.completedAt);
+  return compDate.toDateString() === today.toDateString();
 }
 
 /* ---- UI描画 ---- */
@@ -154,16 +168,20 @@ let postponingTaskId = null;
 
 /** ホーム（今日）タブを描画する */
 function renderToday() {
-  const tasks = loadTasks();
-  const todayTasks = tasks.filter(isToday).sort((a, b) => {
-    // 優先度順ソート
+  const allTasks = loadTasks();
+  
+  // 今日の対象タスク：「未完了で今日が期限（または期限なし）」または「今日完了したタスク」
+  const todayTasks = allTasks.filter(t => 
+    (!t.completed && isToday(t)) || isCompletedToday(t)
+  ).sort((a, b) => {
     const pOrder = { high: 0, mid: 1, low: 2 };
     if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority];
-    // 完了は後ろ
+    // 完了済みのものは一番下へ
     if (a.completed !== b.completed) return a.completed ? 1 : -1;
     return 0;
   });
 
+  // 進捗は「今日の対象タスク」全体から計算
   const done = todayTasks.filter(t => t.completed).length;
   const total = todayTasks.length;
 
@@ -175,15 +193,34 @@ function renderToday() {
   // タスクリスト描画
   const listEl = document.getElementById('today-task-list');
   if (todayTasks.length === 0) {
-    listEl.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🌟</div>
-        <p>今日のタスクはありません<br>上の入力欄からどんどん追加しよう！</p>
-      </div>`;
+    if (total > 0 && done === total) {
+      listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><p>今日のタスクはすべて完了しました！<br>履歴タブから確認できます。</p></div>`;
+    } else {
+      listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🌟</div><p>今日のタスクはありません<br>上の入力欄からどんどん追加しよう！</p></div>`;
+    }
     return;
   }
 
   listEl.innerHTML = todayTasks.map(task => renderTaskCard(task)).join('');
+}
+
+/** 履歴タブを描画する */
+function renderHistory() {
+  const allTasks = loadTasks();
+  // 完了済みかつ「今日完了したものではない（昨日以前の）」タスク
+  const completedTasks = allTasks.filter(t => t.completed && !isCompletedToday(t)).sort((a, b) => {
+    // 完了日時の新しい順に並べる
+    if (a.completedAt && b.completedAt) return new Date(b.completedAt) - new Date(a.completedAt);
+    return b.id.localeCompare(a.id);
+  });
+
+  const listEl = document.getElementById('history-task-list');
+  if (completedTasks.length === 0) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><p>完了済みのタスクはありません</p></div>`;
+    return;
+  }
+
+  listEl.innerHTML = completedTasks.map(task => renderTaskCard(task)).join('');
 }
 
 /** スケジュールタブを描画する */
@@ -253,7 +290,7 @@ function renderTaskCard(task) {
         <div class="task-content">
           <div class="task-title">${escHtml(task.title)}</div>
           <div class="task-meta">
-            ${dl ? `<span class="task-deadline ${dl.cls}">⏰ ${dl.text}</span>` : ''}
+            ${dl ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
             ${task.postponeCount > 0 ? `<span class="postpone-count">後回し×${task.postponeCount}</span>` : ''}
           </div>
         </div>
@@ -276,6 +313,10 @@ function toggleComplete(id, event) {
   const task = tasks.find(t => t.id === id);
   if (!task) return;
   task.completed = !task.completed;
+  
+  // 完了した時間を記録する（未完了に戻した場合はクリア）
+  task.completedAt = task.completed ? new Date().toISOString() : null;
+  
   saveTasks(tasks);
 
   if (task.completed) {
@@ -444,6 +485,49 @@ function closeAddModal() {
   document.getElementById('add-modal').classList.remove('show');
 }
 
+/** プルダウンの開閉 */
+function toggleNotifDropdown() {
+  document.getElementById('notif-select-wrapper').classList.toggle('open');
+}
+
+/** プルダウン以外をクリックしたら閉じる処理 */
+document.addEventListener('click', (e) => {
+  const wrapper = document.getElementById('notif-select-wrapper');
+  if (wrapper && wrapper.classList.contains('open') && !wrapper.contains(e.target)) {
+    wrapper.classList.remove('open');
+  }
+});
+
+/** UIから通知設定配列を読み取り表示を更新する */
+function updateNotifDisplay() {
+  const checkboxes = document.querySelectorAll('.notif-checkbox');
+  const selected = [];
+  checkboxes.forEach(cb => {
+    if (cb.checked) {
+      // 親ラベルのテキストを取得
+      selected.push(cb.parentElement.textContent.trim());
+    }
+  });
+
+  const displayText = document.getElementById('notif-display-text');
+  if (selected.length === 0) {
+    displayText.textContent = '通知なし';
+  } else if (selected.length <= 2) {
+    displayText.textContent = selected.join(', ');
+  } else {
+    displayText.textContent = `${selected[0]} 他${selected.length - 1}件`;
+  }
+}
+
+/** UIに配列の状態を反映させる */
+function updateNotifUI() {
+  const checkboxes = document.querySelectorAll('.notif-checkbox');
+  checkboxes.forEach(cb => {
+    cb.checked = selectedNotifications.includes(cb.value);
+  });
+  updateNotifDisplay();
+}
+
 /** 優先度UIを更新する */
 function updatePriorityUI() {
   document.querySelectorAll('.priority-option').forEach(btn => {
@@ -451,14 +535,7 @@ function updatePriorityUI() {
   });
 }
 
-/** 通知UIを更新する */
-function updateNotifUI() {
-  document.querySelectorAll('.notif-checkbox').forEach(cb => {
-    cb.checked = selectedNotifications.includes(cb.value);
-  });
-}
-
-/** タスクを保存する（新規 or 編集） */
+/** タスクを保存する */
 function saveTask() {
   const title = document.getElementById('task-title-input').value.trim();
   if (!title) {
@@ -469,6 +546,13 @@ function saveTask() {
   }
 
   const deadlineRaw = document.getElementById('task-deadline-input').value;
+  
+  // UIから現在選択されている通知設定を取得
+  const checkboxes = document.querySelectorAll('.notif-checkbox');
+  const newNotifications = [];
+  checkboxes.forEach(cb => {
+    if (cb.checked) newNotifications.push(cb.value);
+  });
   const deadline = deadlineRaw ? new Date(deadlineRaw).toISOString() : null;
   const note = document.getElementById('task-note-input').value.trim();
 
@@ -482,12 +566,12 @@ function saveTask() {
       task.note = note;
       task.deadline = deadline;
       task.priority = selectedPriority;
-      task.notifications = selectedNotifications;
+      task.notifications = newNotifications;
       scheduleNotifications(task);
     }
   } else {
     // 新規作成
-    const task = createTask({ title, note, deadline, priority: selectedPriority, notifications: selectedNotifications });
+    const task = createTask({ title, note, deadline, priority: selectedPriority, notifications: newNotifications });
     tasks.unshift(task);
     scheduleNotifications(task);
   }
@@ -581,7 +665,7 @@ function handleQuickAdd(event) {
   saveTasks(tasks);
   scheduleNotifications(task);
 
-  // 入力リセット（時間はリセットしない = 連続追加しやすい）
+  // 入力リセット
   input.value = '';
   renderCurrentTab();
   showBanner('✅ 追加しました', `「${title}」を今日のリストに追加！`);
@@ -589,19 +673,19 @@ function handleQuickAdd(event) {
 
 /* ---- タブ切り替え ---- */
 
-/** タブを切り替えて再描画する */
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tab);
-  });
-  document.querySelectorAll('.tab-content').forEach(el => {
-    el.classList.toggle('active', el.id === `tab-${tab}`);
-  });
+/** タブを切り替える */
+function switchTab(tabId) {
+  currentTab = tabId;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+  document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+  document.getElementById(`tab-${tabId}`).classList.add('active');
+
   renderCurrentTab();
 }
 
-/** 現在のタブを再描画する */
+/** 現在のタブを描画する */
 function renderCurrentTab() {
   if (currentTab === 'today') renderToday();
   else if (currentTab === 'schedule') renderSchedule();

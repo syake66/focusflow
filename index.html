@@ -66,6 +66,8 @@
             onclick="switchTab('today')" id="tab-btn-today">📋 今日</button>
     <button class="tab-btn" data-tab="schedule" role="tab"
             onclick="switchTab('schedule')" id="tab-btn-schedule">📅 スケジュール</button>
+    <button class="tab-btn" data-tab="history" role="tab"
+            onclick="switchTab('history')" id="tab-btn-history">📚 履歴</button>
   </nav>
 
   <!-- 今日タブ -->
@@ -123,6 +125,14 @@
     </section>
   </div>
 
+  <!-- 履歴タブ -->
+  <div id="tab-history" class="tab-content" role="tabpanel">
+    <section class="history-section">
+      <div class="section-title">完了済みのタスク</div>
+      <div id="history-task-list" class="task-list"></div>
+    </section>
+  </div>
+
 </div>
 
 <!-- FAB: 詳細登録 -->
@@ -167,27 +177,28 @@
     <!-- 通知設定 -->
     <div class="form-group">
       <label class="form-label">通知タイミング</label>
-      <div class="notification-options">
-        <label class="notif-option">
-          <input type="checkbox" class="notif-checkbox" value="3d">
-          <label>3日前に通知</label>
-        </label>
-        <label class="notif-option">
-          <input type="checkbox" class="notif-checkbox" value="1d" checked>
-          <label>前日に通知</label>
-        </label>
-        <label class="notif-option">
-          <input type="checkbox" class="notif-checkbox" value="3h">
-          <label>3時間前に通知</label>
-        </label>
-        <label class="notif-option">
-          <input type="checkbox" class="notif-checkbox" value="1h">
-          <label>1時間前に通知</label>
-        </label>
-        <label class="notif-option">
-          <input type="checkbox" class="notif-checkbox" value="morning" checked>
-          <label>当日の朝9時に通知</label>
-        </label>
+      <div class="custom-multi-select" id="notif-select-wrapper">
+        <div class="select-display" onclick="toggleNotifDropdown()">
+          <span id="notif-display-text">通知設定を選択...</span>
+          <span class="select-arrow">▼</span>
+        </div>
+        <div class="select-dropdown" id="notif-dropdown">
+          <label class="select-option">
+            <input type="checkbox" class="notif-checkbox" value="3d" onchange="updateNotifDisplay()"> 3日前に通知
+          </label>
+          <label class="select-option">
+            <input type="checkbox" class="notif-checkbox" value="1d" checked onchange="updateNotifDisplay()"> 前日に通知
+          </label>
+          <label class="select-option">
+            <input type="checkbox" class="notif-checkbox" value="3h" onchange="updateNotifDisplay()"> 3時間前に通知
+          </label>
+          <label class="select-option">
+            <input type="checkbox" class="notif-checkbox" value="1h" onchange="updateNotifDisplay()"> 1時間前に通知
+          </label>
+          <label class="select-option">
+            <input type="checkbox" class="notif-checkbox" value="morning" checked onchange="updateNotifDisplay()"> 当日の朝9時に通知
+          </label>
+        </div>
       </div>
     </div>
 
@@ -245,7 +256,7 @@
 
     <div class="detail-info-grid">
       <div class="detail-info-row">
-        <span class="detail-info-label">⏰ 期限</span>
+        <span class="detail-info-label">期限</span>
         <span id="detail-task-deadline" class="detail-info-value"></span>
       </div>
       <div class="detail-info-row">

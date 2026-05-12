@@ -585,23 +585,75 @@ body {
 .priority-option[data-value="mid"].selected { border-color: var(--priority-mid); background: rgba(255,167,38,0.12); color: var(--priority-mid); }
 .priority-option[data-value="low"].selected { border-color: var(--priority-low); background: rgba(102,187,106,0.12); color: var(--priority-low); }
 
-/* 通知チェックリスト */
-.notification-options { display: flex; flex-direction: column; gap: 8px; }
+/* 通知チェックリスト（カスタムプルダウン） */
+.custom-multi-select {
+  position: relative;
+  width: 100%;
+}
 
-.notif-option {
+.select-display {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  padding: 12px;
   background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   cursor: pointer;
+  color: var(--text-primary);
+  font-size: 0.95rem;
   transition: var(--transition);
 }
-.notif-option:hover { border-color: var(--accent-purple); background: var(--bg-card-hover); }
-.notif-option input[type="checkbox"] { accent-color: var(--accent-purple); width: 16px; height: 16px; }
-.notif-option label { font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; }
+
+.select-display:hover { border-color: var(--accent-purple); }
+.select-arrow { font-size: 0.7rem; color: var(--text-secondary); transition: transform 0.2s ease; }
+.custom-multi-select.open .select-arrow { transform: rotate(180deg); }
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  max-height: 200px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+.custom-multi-select.open .select-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+.select-option:last-child { border-bottom: none; }
+.select-option:hover { background: rgba(124, 108, 240, 0.05); }
+
+.notif-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-purple);
+  cursor: pointer;
+}
 
 /* ボタン */
 .btn-primary {
