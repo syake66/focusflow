@@ -132,6 +132,10 @@ function getDeadlineLabel(deadline) {
   if (diffDays === 0) {
     const hh = String(dl.getHours()).padStart(2, '0');
     const mm = String(dl.getMinutes()).padStart(2, '0');
+    // 時間が23:59なら時間未設定とみなす
+    if (hh === '23' && mm === '59') {
+      return { text: '今日', cls: diffMs < 0 ? 'deadline-urgent' : 'deadline-soon' };
+    }
     return { text: `${hh}:${mm}`, cls: diffMs < 0 ? 'deadline-urgent' : 'deadline-soon' };
   }
   
@@ -283,7 +287,10 @@ function renderTaskCard(task, isSchedule = false) {
     const d = new Date(task.deadline);
     const hh = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
-    timeHtml = `<span class="schedule-time">${hh}:${mm}</span>`;
+    // 23:59は未設定扱い
+    if (hh !== '23' || mm !== '59') {
+      timeHtml = `<span class="schedule-time">${hh}:${mm}</span>`;
+    }
   }
 
   return `
@@ -423,7 +430,8 @@ function openAddModal(prefillTitle = '') {
   document.getElementById('modal-title-text').textContent = '新しいタスク';
   document.getElementById('task-title-input').value = prefillTitle;
   document.getElementById('task-note-input').value = '';
-  document.getElementById('task-deadline-input').value = '';
+  document.getElementById('task-date-input').value = '';
+  document.getElementById('task-time-input').value = '';
   updatePriorityUI();
   updateNotifUI();
 
@@ -484,8 +492,25 @@ function openEditModal(id) {
   document.getElementById('modal-title-text').textContent = 'タスクを編集';
   document.getElementById('task-title-input').value = task.title;
   document.getElementById('task-note-input').value = task.note || '';
-  document.getElementById('task-deadline-input').value = task.deadline
-    ? new Date(task.deadline).toISOString().slice(0, 16) : '';
+  
+  if (task.deadline) {
+    const d = new Date(task.deadline);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mins = String(d.getMinutes()).padStart(2, '0');
+    document.getElementById('task-date-input').value = `${yyyy}-${mm}-${dd}`;
+    if (hh === '23' && mins === '59') {
+      document.getElementById('task-time-input').value = '';
+    } else {
+      document.getElementById('task-time-input').value = `${hh}:${mins}`;
+    }
+  } else {
+    document.getElementById('task-date-input').value = '';
+    document.getElementById('task-time-input').value = '';
+  }
+
   updatePriorityUI();
   updateNotifUI();
 
@@ -559,6 +584,10 @@ function updatePriorityUI() {
 /** タスクを保存する */
 function saveTask() {
   const title = document.getElementById('task-title-input').value.trim();
+  const note = document.getElementById('task-note-input').value.trim();
+  const dateRaw = document.getElementById('task-date-input').value;
+  const timeRaw = document.getElementById('task-time-input').value;
+
   if (!title) {
     document.getElementById('task-title-input').focus();
     document.getElementById('task-title-input').style.borderColor = 'var(--priority-high)';
@@ -566,16 +595,21 @@ function saveTask() {
     return;
   }
 
-  const deadlineRaw = document.getElementById('task-deadline-input').value;
-  
+  let deadlineISO = null;
+  if (dateRaw) {
+    if (timeRaw) {
+      deadlineISO = new Date(`${dateRaw}T${timeRaw}`).toISOString();
+    } else {
+      deadlineISO = new Date(`${dateRaw}T23:59:00`).toISOString();
+    }
+  }
+
   // UIから現在選択されている通知設定を取得
   const checkboxes = document.querySelectorAll('.notif-checkbox');
   const newNotifications = [];
   checkboxes.forEach(cb => {
     if (cb.checked) newNotifications.push(cb.value);
   });
-  const deadline = deadlineRaw ? new Date(deadlineRaw).toISOString() : null;
-  const note = document.getElementById('task-note-input').value.trim();
 
   const tasks = loadTasks();
 
@@ -585,14 +619,14 @@ function saveTask() {
     if (task) {
       task.title = title;
       task.note = note;
-      task.deadline = deadline;
+      task.deadline = deadlineISO;
       task.priority = selectedPriority;
       task.notifications = newNotifications;
       scheduleNotifications(task);
     }
   } else {
     // 新規作成
-    const task = createTask({ title, note, deadline, priority: selectedPriority, notifications: newNotifications });
+    const task = createTask({ title, note, deadline: deadlineISO, priority: selectedPriority, notifications: newNotifications });
     tasks.unshift(task);
     scheduleNotifications(task);
   }

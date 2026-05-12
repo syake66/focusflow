@@ -144,8 +144,11 @@
 
     <!-- 期限 -->
     <div class="form-group">
-      <label class="form-label" for="task-deadline-input">期限（任意）</label>
-      <input id="task-deadline-input" class="form-input" type="datetime-local">
+      <label class="form-label">期限（任意）</label>
+      <div style="display: flex; gap: 8px;">
+        <input id="task-date-input" class="form-input" type="date" style="flex: 1;" aria-label="期限日">
+        <input id="task-time-input" class="form-input" type="time" style="width: 120px;" aria-label="期限時間">
+      </div>
     </div>
 
     <!-- 優先度 -->
