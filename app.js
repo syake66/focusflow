@@ -417,6 +417,8 @@ function openAddModal(prefillTitle = '') {
   updatePriorityUI();
   updateNotifUI();
 
+  document.getElementById('edit-postpone-btn').style.display = 'none'; // 新規時は非表示
+
   document.getElementById('add-modal').classList.add('show');
   setTimeout(() => document.getElementById('task-title-input').focus(), 350);
 }
@@ -477,7 +479,16 @@ function openEditModal(id) {
   updatePriorityUI();
   updateNotifUI();
 
+  document.getElementById('edit-postpone-btn').style.display = 'block'; // 編集時は表示
+
   document.getElementById('add-modal').classList.add('show');
+}
+
+/** 編集画面から後回しにする */
+function handleEditPostpone() {
+  if (!editingTaskId) return;
+  closeAddModal();
+  openPostpone(editingTaskId, null);
 }
 
 /** モーダルを閉じる */

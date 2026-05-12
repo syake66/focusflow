@@ -186,8 +186,11 @@
       </div>
     </div>
 
-    <button class="btn-primary" onclick="saveTask()" id="save-task-btn">保存する</button>
-    <button class="btn-danger" onclick="closeAddModal()" id="cancel-task-btn">キャンセル</button>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+      <button class="btn-primary" onclick="saveTask()" id="save-task-btn">保存する</button>
+      <button class="btn-postpone" onclick="handleEditPostpone()" id="edit-postpone-btn" style="display: none;">😈 後回しにしちゃう</button>
+      <button class="btn-danger" onclick="closeAddModal()" id="cancel-task-btn">キャンセル</button>
+    </div>
   </div>
 </div>
 
