@@ -199,6 +199,7 @@ body {
   gap: 10px;
   align-items: center;
   margin-bottom: 8px;
+  width: 100%;
 }
 
 /* 時間オプション行 */
@@ -245,7 +246,9 @@ body {
 .quick-notif-check input { accent-color: var(--accent-purple); width: 15px; height: 15px; cursor: pointer; }
 
 .quick-add-input {
-  flex: 0 0 60%;
+  flex: 1;
+  min-width: 0; /* これがないと文字幅で押し広げられる */
+  width: 100%;
   padding: 14px 16px;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
