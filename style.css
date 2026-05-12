@@ -245,7 +245,7 @@ body {
 .quick-notif-check input { accent-color: var(--accent-purple); width: 15px; height: 15px; cursor: pointer; }
 
 .quick-add-input {
-  flex: 1;
+  flex: 0 0 60%;
   padding: 14px 16px;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
