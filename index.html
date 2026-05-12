@@ -30,29 +30,13 @@
   </div>
 </div>
 
-<!-- 通知バナー -->
-<div id="notif-banner" class="notification-banner" role="alert" aria-live="polite">
-  <span class="banner-icon">🔔</span>
-  <div class="banner-text">
-    <div id="banner-title" class="banner-title"></div>
-    <div id="banner-body" class="banner-body"></div>
-  </div>
-  <button class="banner-close" onclick="document.getElementById('notif-banner').classList.remove('show')">✕</button>
-</div>
+
 
 <!-- メインアプリ -->
 <div class="app-wrapper">
 
-  <!-- ヘッダー -->
-  <header class="app-header">
-    <div class="app-logo">
-      <div class="logo-icon">⚡</div>
-      <span class="logo-text">FocusFlow</span>
-    </div>
-    <div class="header-actions">
-      <button class="icon-btn" onclick="requestNotificationPermission()" title="通知を許可する" id="notif-btn">🔔</button>
-    </div>
-  </header>
+  <!-- ヘッダー（スマホのステータスバー余白用） -->
+  <header class="app-header"></header>
 
   <!-- 日付表示 -->
   <div class="date-section">

@@ -55,14 +55,12 @@ body {
 
 /* ---- ヘッダー ---- */
 .app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 20px 0;
+  height: 44px; /* ステータスバー用の固定高さ */
+  padding-top: env(safe-area-inset-top, 0px);
   position: sticky;
   top: 0;
   z-index: 100;
-  background: linear-gradient(to bottom, var(--bg-primary) 85%, transparent);
+  background: var(--bg-primary);
 }
 
 .app-logo {

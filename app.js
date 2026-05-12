@@ -698,6 +698,7 @@ let bannerTimer = null;
 /** インアプリ通知バナーを表示する */
 function showBanner(title, body) {
   const banner = document.getElementById('notif-banner');
+  if (!banner) return; // バナーUIは削除されたためスキップ
   document.getElementById('banner-title').textContent = title;
   document.getElementById('banner-body').textContent = body;
   banner.classList.add('show');
