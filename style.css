@@ -371,13 +371,26 @@ body {
 
 .task-content { flex: 1; min-width: 0; }
 
+.task-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
 .task-title {
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 4px;
   line-height: 1.4;
   word-break: break-word;
+}
+
+.schedule-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .task-meta {

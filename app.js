@@ -130,10 +130,9 @@ function getDeadlineLabel(deadline) {
   if (diffMs < 0) return { text: '期限切れ', cls: 'deadline-urgent' };
   
   if (diffDays === 0) {
-    const diffH = diffMs / (1000 * 60 * 60);
-    if (diffH < 1) return { text: `今日（あと${Math.ceil(diffMs / 60000)}分）`, cls: 'deadline-urgent' };
-    if (diffH < 3) return { text: `今日（あと${Math.ceil(diffH)}時間）`, cls: 'deadline-urgent' };
-    return { text: `今日`, cls: 'deadline-soon' };
+    const hh = String(dl.getHours()).padStart(2, '0');
+    const mm = String(dl.getMinutes()).padStart(2, '0');
+    return { text: `${hh}:${mm}`, cls: diffMs < 0 ? 'deadline-urgent' : 'deadline-soon' };
   }
   
   if (diffDays === 1) return { text: '明日', cls: 'deadline-soon' };
@@ -225,7 +224,7 @@ function renderHistory() {
 
 /** スケジュールタブを描画する */
 function renderSchedule() {
-  const tasks = loadTasks().filter(t => !t.completed && t.deadline);
+  const tasks = loadTasks().filter(t => !t.completed && t.deadline && !isToday(t));
   tasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
   // 日付でグルーピング
@@ -246,7 +245,7 @@ function renderSchedule() {
   listEl.innerHTML = Object.values(groups).map(group => `
     <div class="date-group">
       <div class="date-group-label">📅 ${group.label}</div>
-      ${group.tasks.map(task => renderTaskCard(task)).join('')}
+      ${group.tasks.map(task => renderTaskCard(task, true)).join('')}
     </div>
   `).join('');
 }
@@ -275,9 +274,17 @@ function priorityBadge(priority) {
 }
 
 /** タスクカードのHTMLを生成する */
-function renderTaskCard(task) {
+function renderTaskCard(task, isSchedule = false) {
   const dl = task.deadline ? getDeadlineLabel(task.deadline) : null;
   const isOverdue = task.deadline && new Date(task.deadline) < new Date() && !task.completed;
+
+  let timeHtml = '';
+  if (isSchedule && task.deadline) {
+    const d = new Date(task.deadline);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    timeHtml = `<span class="schedule-time">${hh}:${mm}</span>`;
+  }
 
   return `
     <div class="task-card ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}"
@@ -288,9 +295,12 @@ function renderTaskCard(task) {
              id="check-${task.id}"
              onclick="toggleComplete('${task.id}', event)"></div>
         <div class="task-content">
-          <div class="task-title">${escHtml(task.title)}</div>
+          <div class="task-title-row">
+            <div class="task-title">${escHtml(task.title)}</div>
+            ${timeHtml}
+          </div>
           <div class="task-meta">
-            ${dl ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
+            ${dl && !isSchedule ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
             ${task.postponeCount > 0 ? `<span class="postpone-count">後回し×${task.postponeCount}</span>` : ''}
           </div>
         </div>
