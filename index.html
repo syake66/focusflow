@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FocusFlow - ADHDフレンドリーなタスクマネージャー</title>
+  <meta name="description" content="ADHDの特性に寄り添う、シンプルで直感的なタスク管理アプリ。後回し防止・多段階通知・期限の視覚化で今日をやり遂げよう。">
+  <meta name="theme-color" content="#7c6cf0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FocusFlow">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 紙吹雪コンテナ -->
+<div id="confetti-container" class="confetti-container"></div>
+
+<!-- 全タスク完了お祝いオーバーレイ -->
+<div id="celebration-overlay" class="celebration-overlay" onclick="closeCelebration()">
+  <div class="celebration-content">
+    <div class="celebration-emoji-burst" id="emoji-burst"></div>
+    <div class="celebration-stars" id="celebration-stars"></div>
+    <h1 class="celebration-title">🎉 全部完了！</h1>
+    <p class="celebration-sub">今日のタスクを全部やり遂げた！<br>本当によく頑張ったね✨</p>
+    <div class="celebration-fireworks" id="fireworks"></div>
+    <button class="celebration-close-btn">タップして閉じる</button>
+  </div>
+</div>
+
+<!-- 通知バナー -->
+<div id="notif-banner" class="notification-banner" role="alert" aria-live="polite">
+  <span class="banner-icon">🔔</span>
+  <div class="banner-text">
+    <div id="banner-title" class="banner-title"></div>
+    <div id="banner-body" class="banner-body"></div>
+  </div>
+  <button class="banner-close" onclick="document.getElementById('notif-banner').classList.remove('show')">✕</button>
+</div>
+
+<!-- メインアプリ -->
+<div class="app-wrapper">
+
+  <!-- ヘッダー -->
+  <header class="app-header">
+    <div class="app-logo">
+      <div class="logo-icon">⚡</div>
+      <span class="logo-text">FocusFlow</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="requestNotificationPermission()" title="通知を許可する" id="notif-btn">🔔</button>
+    </div>
+  </header>
+
+  <!-- 日付表示 -->
+  <div class="date-section">
+    <div id="date-today" class="date-today"></div>
+    <div id="date-label" class="date-label"></div>
+  </div>
+
+  <!-- タブナビ -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" data-tab="today" role="tab"
+            onclick="switchTab('today')" id="tab-btn-today">📋 今日</button>
+    <button class="tab-btn" data-tab="schedule" role="tab"
+            onclick="switchTab('schedule')" id="tab-btn-schedule">📅 スケジュール</button>
+  </nav>
+
+  <!-- 今日タブ -->
+  <div id="tab-today" class="tab-content active" role="tabpanel">
+
+    <!-- 進捗バー -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>今日の進捗</span>
+        <span id="progress-label">0 / 0 完了</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="progress-fill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- クイック入力 -->
+    <section class="quick-add-section">
+      <form id="quick-add-form" autocomplete="off">
+        <div class="quick-add-form">
+          <input
+            id="quick-input"
+            class="quick-add-input"
+            type="text"
+            placeholder="今日やることを追加…（Enterで即登録）"
+            maxlength="100"
+            aria-label="今日のタスクを入力"
+          >
+          <button type="submit" class="quick-add-btn" aria-label="追加">＋</button>
+        </div>
+        <div class="quick-add-sub">
+          <span class="quick-time-label">⏰ 時間（任意）</span>
+          <input id="quick-time-input" class="quick-time-input" type="time" aria-label="時間を設定">
+          <label class="quick-notif-check">
+            <input type="checkbox" id="quick-notif-1h" checked>
+            1時間前に通知
+          </label>
+        </div>
+      </form>
+    </section>
+
+    <!-- タスクリスト -->
+    <section class="task-list-section">
+      <div class="section-title">タスク一覧</div>
+      <div id="today-task-list" class="task-list"></div>
+    </section>
+
+  </div>
+
+  <!-- スケジュールタブ -->
+  <div id="tab-schedule" class="tab-content" role="tabpanel">
+    <section class="schedule-section">
+      <div class="section-title">期限別スケジュール</div>
+      <div id="schedule-list"></div>
+    </section>
+  </div>
+
+</div>
+
+<!-- FAB: 詳細登録 -->
+<button class="fab" onclick="openAddModal()" aria-label="タスクを詳細登録する" id="fab-add">＋</button>
+
+<!-- ===== タスク登録/編集モーダル ===== -->
+<div id="add-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 id="modal-title-text" class="modal-title">新しいタスク</h2>
+
+    <!-- タイトル -->
+    <div class="form-group">
+      <label class="form-label" for="task-title-input">タイトル ＊</label>
+      <input id="task-title-input" class="form-input" type="text"
+             placeholder="タスク名を入力" maxlength="100">
+    </div>
+
+    <!-- メモ -->
+    <div class="form-group">
+      <label class="form-label" for="task-note-input">メモ（任意）</label>
+      <textarea id="task-note-input" class="form-textarea"
+                placeholder="詳細・やり方・参考リンクなど"></textarea>
+    </div>
+
+    <!-- 期限 -->
+    <div class="form-group">
+      <label class="form-label" for="task-deadline-input">期限（任意）</label>
+      <input id="task-deadline-input" class="form-input" type="datetime-local">
+    </div>
+
+    <!-- 優先度 -->
+    <div class="form-group">
+      <label class="form-label">優先度</label>
+      <div class="priority-selector">
+        <button class="priority-option" data-value="high" type="button">🔴 高</button>
+        <button class="priority-option selected" data-value="mid" type="button">🟡 中</button>
+        <button class="priority-option" data-value="low" type="button">🟢 低</button>
+      </div>
+    </div>
+
+    <!-- 通知設定 -->
+    <div class="form-group">
+      <label class="form-label">通知タイミング</label>
+      <div class="notification-options">
+        <label class="notif-option">
+          <input type="checkbox" class="notif-checkbox" value="3d">
+          <label>3日前に通知</label>
+        </label>
+        <label class="notif-option">
+          <input type="checkbox" class="notif-checkbox" value="1d" checked>
+          <label>前日に通知</label>
+        </label>
+        <label class="notif-option">
+          <input type="checkbox" class="notif-checkbox" value="3h">
+          <label>3時間前に通知</label>
+        </label>
+        <label class="notif-option">
+          <input type="checkbox" class="notif-checkbox" value="1h">
+          <label>1時間前に通知</label>
+        </label>
+        <label class="notif-option">
+          <input type="checkbox" class="notif-checkbox" value="morning" checked>
+          <label>当日の朝9時に通知</label>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveTask()" id="save-task-btn">保存する</button>
+    <button class="btn-danger" onclick="closeAddModal()" id="cancel-task-btn">キャンセル</button>
+  </div>
+</div>
+
+<!-- ===== 後回しモーダル ===== -->
+<div id="postpone-modal" class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">😅 後回しにしちゃう</h2>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">
+      「<span id="postpone-task-name" style="color:var(--text-primary);font-weight:600;"></span>」<br>
+      どれくらい後回しにする？
+    </p>
+
+    <div class="postpone-options">
+      <button class="postpone-option" onclick="doPostpone(1)" id="postpone-1d">
+        <span class="option-emoji">📆</span>
+        <div>
+          <div>明日に延ばす</div>
+          <div class="option-desc">1日後に設定します</div>
+        </div>
+      </button>
+      <button class="postpone-option" onclick="doPostpone(3)" id="postpone-3d">
+        <span class="option-emoji">🗓</span>
+        <div>
+          <div>3日後に延ばす</div>
+          <div class="option-desc">ちょっと余裕を持って</div>
+        </div>
+      </button>
+      <button class="postpone-option" onclick="doPostpone(7)" id="postpone-7d">
+        <span class="option-emoji">📅</span>
+        <div>
+          <div>1週間後に延ばす</div>
+          <div class="option-desc">しっかり準備してから</div>
+        </div>
+      </button>
+    </div>
+
+    <button class="btn-danger" onclick="closePostponeModal()" id="cancel-postpone-btn">やっぱりやる！💪</button>
+  </div>
+</div>
+
+<!-- ===== タスク詳細ポップアップ ===== -->
+<div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+
+    <h2 id="detail-task-title" class="detail-title"></h2>
+
+    <p id="detail-task-note" class="detail-note"></p>
+
+    <div class="detail-info-grid">
+      <div class="detail-info-row">
+        <span class="detail-info-label">⏰ 期限</span>
+        <span id="detail-task-deadline" class="detail-info-value"></span>
+      </div>
+      <div class="detail-info-row">
+        <span class="detail-info-label">🎯 優先度</span>
+        <span id="detail-task-priority" class="detail-info-value"></span>
+      </div>
+      <div class="detail-info-row" id="detail-postpone-row">
+        <span class="detail-info-label">😅 後回し</span>
+        <span id="detail-postpone-count" class="detail-info-value" style="color:var(--accent-pink);"></span>
+      </div>
+    </div>
+
+    <button id="detail-postpone-btn" class="postpone-btn-large">
+      😅 後回しにしちゃう
+    </button>
+
+    <div class="detail-footer">
+      <button id="detail-edit-btn" class="btn-primary">✏️ 編集する</button>
+      <button class="btn-danger" onclick="closeTaskDetail()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
