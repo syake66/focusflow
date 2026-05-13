@@ -850,6 +850,26 @@ function doPostpone(days) {
 
 /* ---- クイック入力 ---- */
 
+/** クイック入力の時間表示を更新する */
+function updateQuickTimeDisplay(val) {
+  const display = document.getElementById('quick-time-display');
+  if (!display) return;
+  
+  if (val) {
+    display.textContent = val;
+    display.classList.add('has-value');
+  } else {
+    display.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quick-clock-icon">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    `;
+    display.classList.remove('has-value');
+  }
+}
+
+
 /** クイック入力フォームの送信処理 */
 function handleQuickAdd(event) {
   event.preventDefault();
@@ -881,6 +901,10 @@ function handleQuickAdd(event) {
 
   // 入力リセット
   input.value = '';
+  const timeInput = document.getElementById('quick-time-input');
+  timeInput.value = '';
+  updateQuickTimeDisplay('');
+  
   renderCurrentTab();
   showBanner('✅ 追加しました', `「${title}」を今日のリストに追加！`);
 }

@@ -238,21 +238,34 @@ body {
 .quick-time-icon-wrapper {
   position: absolute;
   right: 8px;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(124, 108, 240, 0.08);
+  background-color: rgba(124, 108, 240, 0.05); /* さらに薄く */
   border-radius: 8px;
-  color: var(--text-secondary);
+  color: #b0aec5; /* さらに薄いアイコン色 */
   transition: var(--transition);
   cursor: pointer;
   z-index: 10;
-  padding: 8px; /* SVGが大きすぎないように */
 }
-.quick-time-icon-wrapper:hover {
-  background-color: rgba(124, 108, 240, 0.15);
+
+.quick-time-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-purple);
+  pointer-events: none;
+}
+
+.quick-time-display.has-value {
+  padding: 0;
 }
 
 .quick-clock-icon {
