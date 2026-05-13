@@ -33,7 +33,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  background: var(--bg-primary);
+  background-color: var(--bg-primary);
 }
 
 body {
@@ -42,9 +42,6 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  background-image:
-    radial-gradient(ellipse 60% 40% at 20% 0%, rgba(124,108,240,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 80% 100%, rgba(91,138,240,0.05) 0%, transparent 70%);
 }
 
 /* ---- レイアウト ---- */
@@ -55,6 +52,7 @@ body {
   display: flex;
   flex-direction: column;
   padding-bottom: 80px;
+  background: var(--bg-primary);
 }
 
 /* ---- ヘッダー ---- */
@@ -64,7 +62,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 .app-logo {
@@ -191,7 +189,7 @@ body {
 
 .quick-time-input {
   padding: 6px 10px;
-  background: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.4);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text-primary);
@@ -297,7 +295,13 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.task-card:hover { background: var(--bg-card-hover); border-color: rgba(124, 108, 240, 0.4); box-shadow: 0 4px 20px rgba(100,80,220,0.13); }
+@media (hover: hover) {
+  .task-card:hover { 
+    background: var(--bg-card-hover); 
+    border-color: rgba(124, 108, 240, 0.4); 
+    box-shadow: 0 4px 20px rgba(100,80,220,0.13); 
+  }
+}
 
 /* 優先度のサイドバー */
 .task-card::before {
@@ -310,7 +314,11 @@ body {
 .task-card[data-priority="mid"]::before { background: var(--priority-mid); }
 .task-card[data-priority="low"]::before { background: var(--priority-low); }
 
-.task-card.completed { opacity: 0.5; }
+.task-card.completed { 
+  opacity: 0.5; 
+  background: rgba(255, 255, 255, 0.4); /* 完了したものは白っぽく */
+  border-color: transparent;
+}
 .task-card.completed .task-title { text-decoration: line-through; color: var(--text-muted); }
 
 /* 期限切れ */
