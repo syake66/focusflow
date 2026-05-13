@@ -205,21 +205,19 @@ body {
 }
 
 .quick-time-icon-wrapper {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
+  position: relative;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(124, 108, 240, 0.08);
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
   transition: var(--transition);
   cursor: pointer;
-  z-index: 10;
+  flex-shrink: 0;
 }
 .quick-time-icon-wrapper:hover {
   background: rgba(124, 108, 240, 0.15);
