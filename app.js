@@ -464,7 +464,6 @@ function renderTaskCard(task, isSchedule = false) {
         <div class="task-check ${task.completed ? 'checked' : ''}"
              id="check-${task.id}"
              onclick="toggleComplete('${task.id}', event)">
-          ${task.completed ? iconChecked : iconCheck}
         </div>
         <div class="task-content">
           <div class="task-title-row">
