@@ -344,7 +344,8 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  /* レイアウトに関わるtransitionを削除し、ホバー時などの色の変化のみに限定 */
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -352,22 +353,22 @@ body {
 }
 
 .task-card.deleting {
-  animation: fadeOut 0.3s ease-in forwards;
+  animation: fadeOut 0.2s ease-out forwards;
   pointer-events: none;
 }
 
 .task-card.newly-added {
-  animation: fadeInQuick 0.5s ease-out forwards;
+  animation: fadeInQuick 0.25s ease-out forwards;
 }
 
 @keyframes fadeInQuick {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeOut {
   from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.95); }
+  to { opacity: 0; transform: scale(0.98); }
 }
 
 @media (hover: hover) {
