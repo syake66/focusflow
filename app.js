@@ -317,6 +317,7 @@ let selectedPriority = 'mid';
 let selectedNotifications = [];
 let editingTaskId = null;
 let postponingTaskId = null;
+let newlyAddedTaskId = null; // 新規追加されたタスクを追跡
 
 /** ホーム（今日）タブを描画する */
 function renderToday() {
@@ -340,7 +341,13 @@ function renderToday() {
   // 進捗バー更新
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
   document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = `${done} / ${total} 完了`;
+  
+  const labelEl = document.getElementById('progress-label');
+  if (total > 0 && done === total) {
+    labelEl.innerHTML = `<span style="color:var(--accent-purple); font-weight:700; animation: bounce 0.5s ease-out;">Completed🌈✨</span>`;
+  } else {
+    labelEl.textContent = `${done} / ${total} 完了`;
+  }
 
   // タスクリスト描画
   const listEl = document.getElementById('today-task-list');
@@ -447,8 +454,10 @@ function renderTaskCard(task, isSchedule = false) {
   const iconChecked = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
   const iconTrash = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`;
 
+  const isNewlyAdded = task.id === newlyAddedTaskId;
+
   return `
-    <div class="task-card ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}"
+    <div class="task-card ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''} ${isNewlyAdded ? 'newly-added' : ''}"
          data-id="${task.id}" data-priority="${task.priority}"
          onclick="openEditModal('${task.id}')">
       <div class="task-card-top">
@@ -503,7 +512,7 @@ function toggleComplete(id, event) {
     const allTasks = loadTasks();
     const todayTasks = allTasks.filter(isToday);
     if (todayTasks.length > 0 && todayTasks.every(t => t.completed)) {
-      setTimeout(() => showCelebration(), 600);
+      showCelebration(); // ラグなしで表示
     }
   }
 
@@ -903,6 +912,8 @@ function handleQuickAdd(event) {
 
   const tasks = loadTasks();
   const task = createTask({ title, deadline, notifications });
+  newlyAddedTaskId = task.id; // 新規追加IDをセット
+  
   tasks.unshift(task);
   saveTasks(tasks);
   scheduleNotifications(task);
@@ -915,6 +926,11 @@ function handleQuickAdd(event) {
   
   renderCurrentTab();
   showBanner('✅ 追加しました', `「${title}」を今日のリストに追加！`);
+
+  // 数秒後にハイライト状態を解除（次回の再描画で反映）
+  setTimeout(() => {
+    newlyAddedTaskId = null;
+  }, 2000);
 }
 
 /* ---- タブ切り替え ---- */
