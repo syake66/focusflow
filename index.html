@@ -108,13 +108,19 @@
               aria-label="今日のタスクを入力"
               style="padding-right: 90px; width: 100%;"
             >
-            <input 
-              id="quick-time-input" 
-              class="quick-time-input-inline" 
-              type="time" 
-              aria-label="時間を設定"
-              title="時間を設定"
-            >
+            <div class="quick-time-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quick-clock-icon">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <input 
+                id="quick-time-input" 
+                class="quick-time-input-hidden" 
+                type="time" 
+                aria-label="時間を設定"
+                title="時間を設定"
+              >
+            </div>
           </div>
           <button type="submit" class="quick-add-btn" aria-label="追加">＋</button>
         </div>
