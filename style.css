@@ -393,9 +393,8 @@ body {
 .task-check {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
-  border: 2px solid var(--accent-purple);
-  opacity: 0.6;
+  border-radius: 8px;
+  border: 2.5px solid #e0e0f8;
   background: transparent;
   cursor: pointer;
   flex-shrink: 0;
@@ -408,7 +407,7 @@ body {
 }
 .task-check.checked {
   background: var(--accent-purple);
-  opacity: 1;
+  border-color: var(--accent-purple);
 }
 .task-check.checked::after {
   content: '✓';
@@ -540,16 +539,16 @@ body {
 
 .task-deadline {
   font-size: 0.75rem;
-  color: var(--accent-purple);
+  color: #a0a0d0;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 3px;
 }
 
-.deadline-urgent { color: var(--accent-purple) !important; }
-.deadline-soon { color: var(--accent-purple) !important; opacity: 0.8; }
-.deadline-ok { color: var(--accent-purple) !important; opacity: 0.6; }
+.deadline-urgent { color: #a0a0d0 !important; }
+.deadline-soon { color: #a0a0d0 !important; opacity: 0.8; }
+.deadline-ok { color: #a0a0d0 !important; opacity: 0.6; }
 
 .postpone-count {
   font-size: 0.7rem;
