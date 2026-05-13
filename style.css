@@ -216,7 +216,7 @@ body {
   min-width: 0;
   width: 100%;
   padding: 14px 16px;
-  padding-right: 54px; /* アイコン分の余白 */
+  padding-right: 90px; /* アイコン＋時間表示用の余白を確保 */
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -233,6 +233,21 @@ body {
   border-color: var(--accent-purple);
   background: #fff;
   box-shadow: 0 0 0 3px rgba(124, 108, 240, 0.15);
+}
+
+.quick-time-display-label {
+  position: absolute;
+  right: 50px; /* アイコンの左側に配置 */
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0.8;
+  display: none;
+}
+
+.quick-time-display-label.has-value {
+  display: block;
 }
 
 .quick-time-icon-wrapper {
@@ -252,26 +267,7 @@ body {
   padding: 8px;
 }
 
-.quick-time-display-overlay {
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent-purple);
-  color: white;
-  font-size: 10px;
-  padding: 1px 4px;
-  border-radius: 4px;
-  font-weight: 700;
-  white-space: nowrap;
-  display: none;
-  pointer-events: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
-.quick-time-display-overlay.has-value {
-  display: block;
-}
 
 .quick-clock-icon {
   width: 100%;
