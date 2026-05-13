@@ -214,11 +214,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(124, 108, 240, 0.08);
+  background: rgba(124, 108, 240, 0.15);
   border-radius: 8px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   transition: var(--transition);
   cursor: pointer;
+  z-index: 10;
 }
 .quick-time-icon-wrapper:hover {
   background: rgba(124, 108, 240, 0.15);
@@ -237,6 +238,7 @@ body {
   height: 100%;
   cursor: pointer;
   -webkit-appearance: none;
+  z-index: 11;
 }
 
 .quick-notif-check {
