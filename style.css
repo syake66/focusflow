@@ -15,7 +15,7 @@
   --accent-pink: #e91e8c;
   --priority-high: #e53935;
   --priority-mid: #ffd600;
-  --priority-low: #b2ff59;
+  --priority-low: #aed581;
   --text-primary: #1a1640;
   --text-secondary: #5c5880;
   --text-muted: #9e99bb;
@@ -372,11 +372,6 @@ body {
 .task-card[data-priority="high"]::before { background: var(--priority-high); }
 .task-card[data-priority="mid"]::before { background: var(--priority-mid); }
 .task-card[data-priority="low"]::before { background: var(--priority-low); }
-
-/* 優先度別のカード背景微調整（オプション） */
-.task-card[data-priority="high"] { background: rgba(229, 57, 53, 0.04); }
-.task-card[data-priority="mid"] { background: rgba(255, 214, 0, 0.06); }
-.task-card[data-priority="low"] { background: rgba(178, 255, 89, 0.06); }
 
 .task-card.completed { 
   opacity: 0.5; 
