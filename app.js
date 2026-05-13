@@ -510,6 +510,7 @@ function toggleComplete(id, event) {
   renderCurrentTab();
 }
 
+
 /* ---- 全タスク完了お祝い ---- */
 
 /** お祝いオーバーレイを表示してパーティクルを起動する */
@@ -573,9 +574,21 @@ function startEmojiRise() {
 /** タスクを削除する */
 function deleteTask(id, event) {
   event.stopPropagation();
-  const tasks = loadTasks().filter(t => t.id !== id);
-  saveTasks(tasks);
-  renderCurrentTab();
+  const card = event.target.closest('.task-card');
+  if (card) {
+    card.classList.add('deleting');
+    // アニメーション完了後に削除を実行
+    card.addEventListener('animationend', () => {
+      const tasks = loadTasks().filter(t => t.id !== id);
+      saveTasks(tasks);
+      renderCurrentTab();
+    }, { once: true });
+  } else {
+    // 万が一カードが見つからない場合は即時削除
+    const tasks = loadTasks().filter(t => t.id !== id);
+    saveTasks(tasks);
+    renderCurrentTab();
+  }
 }
 
 /* ---- タスク登録モーダル ---- */
