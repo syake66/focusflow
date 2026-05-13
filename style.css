@@ -204,20 +204,51 @@ body {
   box-shadow: 0 0 0 3px rgba(124, 108, 240, 0.12);
 }
 
-.quick-time-icon-wrapper {
+.quick-input-container {
   position: relative;
-  width: 48px;
-  height: 48px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.quick-add-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 14px 16px;
+  padding-right: 54px; /* アイコン分の余白 */
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(100, 80, 220, 0.06);
+}
+
+.quick-add-input::placeholder { color: var(--text-muted); }
+.quick-add-input:focus {
+  border-color: var(--accent-purple);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(124, 108, 240, 0.15);
+}
+
+.quick-time-icon-wrapper {
+  position: absolute;
+  right: 8px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(124, 108, 240, 0.08);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   color: var(--text-secondary);
   transition: var(--transition);
   cursor: pointer;
-  flex-shrink: 0;
+  z-index: 10;
 }
 .quick-time-icon-wrapper:hover {
   background: rgba(124, 108, 240, 0.15);
@@ -225,6 +256,8 @@ body {
 }
 
 .quick-clock-icon {
+  width: 20px;
+  height: 20px;
   pointer-events: none;
 }
 
@@ -251,28 +284,7 @@ body {
 }
 .quick-notif-check input { accent-color: var(--accent-purple); width: 15px; height: 15px; cursor: pointer; }
 
-.quick-add-input {
-  flex: 1;
-  min-width: 0; /* これがないと文字幅で押し広げられる */
-  width: 100%;
-  padding: 14px 16px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  font-family: inherit;
-  outline: none;
-  transition: var(--transition);
-  box-shadow: 0 2px 8px rgba(100, 80, 220, 0.06);
-}
 
-.quick-add-input::placeholder { color: var(--text-muted); }
-.quick-add-input:focus {
-  border-color: var(--accent-purple);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(124, 108, 240, 0.15);
-}
 
 .quick-add-btn {
   width: 48px;
