@@ -14,7 +14,7 @@
   --accent-blue: #5b8af0;
   --accent-pink: #e91e8c;
   --priority-high: #e53935;
-  --priority-mid: #ffd600;
+  --priority-mid: #ff9800;
   --priority-low: #aed581;
   --text-primary: #1a1640;
   --text-secondary: #5c5880;
@@ -393,7 +393,7 @@ body {
 .task-check {
   width: 24px;
   height: 24px;
-  border-radius: 8px;
+  border-radius: 50%;
   border: 2.5px solid #e0e0f8;
   background: transparent;
   cursor: pointer;
@@ -539,16 +539,15 @@ body {
 
 .task-deadline {
   font-size: 0.75rem;
-  color: #a0a0d0;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 3px;
 }
 
-.deadline-urgent { color: #a0a0d0 !important; }
-.deadline-soon { color: #a0a0d0 !important; opacity: 0.8; }
-.deadline-ok { color: #a0a0d0 !important; opacity: 0.6; }
+.deadline-high { color: var(--priority-high) !important; }
+.deadline-mid { color: var(--priority-mid) !important; }
+.deadline-low { color: var(--priority-low) !important; }
 
 .postpone-count {
   font-size: 0.7rem;

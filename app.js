@@ -473,7 +473,7 @@ function renderTaskCard(task, isSchedule = false) {
             </div>
           </div>
           <div class="task-meta">
-            ${dl && !isSchedule ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
+            ${dl && !isSchedule ? `<span class="task-deadline deadline-${task.priority}">${dl.text}</span>` : ''}
             ${task.postponeCount > 0 ? `<span class="postpone-count">後回し×${task.postponeCount}</span>` : ''}
           </div>
         </div>
