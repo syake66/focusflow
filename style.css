@@ -983,12 +983,20 @@ body {
   font-size: 1.2rem;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 8px;
   border-radius: 50%;
   transition: var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .modal-close-btn {
+    font-size: 1.6rem;
+    padding: 12px;
+  }
 }
 
 .modal-close-btn:hover {
