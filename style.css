@@ -414,7 +414,8 @@ body {
 
 .schedule-time {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: #aab0c0;
+  opacity: 0.8;
   white-space: nowrap;
 }
 
