@@ -384,17 +384,18 @@ body {
 
 /* ユーザー名表示 */
 .date-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 24px;
+  position: relative;
+  padding: 0 20px 16px;
 }
 .user-display {
-  font-size: 0.75rem;
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  font-size: 0.7rem;
   color: var(--text-muted);
   opacity: 0.8;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 4px;
 }
 .user-display:hover {
   opacity: 1;
@@ -403,43 +404,44 @@ body {
 
 .tab-nav {
   display: flex;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 8px;
+  padding: 16px 20px;
+  margin-bottom: 0;
 }
 
 .tab-btn {
   flex: 1;
-  padding: 12px;
-  border-radius: 16px;
+  padding: 10px;
   border: none;
+  border-radius: var(--radius-sm);
   background: var(--bg-card);
   color: var(--text-secondary);
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.tab-btn.icon-only {
-  flex: 0 0 50px;
+  transition: var(--transition);
+  border: 1px solid transparent;
+  font-family: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
 }
 
 .tab-btn.active {
-  background: var(--accent-purple);
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
   color: white;
-  box-shadow: 0 8px 16px rgba(124, 108, 240, 0.3);
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(124, 108, 240, 0.4);
 }
 
 .task-check {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 1.4rem;
 }
 
 .task-check.checked svg {
