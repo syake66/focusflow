@@ -358,9 +358,20 @@ body {
 }
 
 .task-card.newly-added {
-  /* 点滅を避けるためアニメーションを削除し、一瞬だけ背景色を明るくする等の控えめな演出に変更 */
-  background: var(--bg-card-hover);
-  border-color: var(--accent-purple);
+  animation: highlightFade 2s ease-out forwards;
+}
+
+@keyframes highlightFade {
+  0% { 
+    background: var(--bg-card-hover);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 2px rgba(124, 108, 240, 0.1);
+  }
+  100% { 
+    background: var(--bg-secondary);
+    border-color: var(--border);
+    box-shadow: 0 2px 12px rgba(100, 80, 220, 0.07);
+  }
 }
 
 @keyframes fadeOut {
