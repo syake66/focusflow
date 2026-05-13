@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FocusFlow">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=1.1.0">
+  <link rel="stylesheet" href="style.css?v=1.1.1">
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -117,6 +117,7 @@
                 id="quick-time-input" 
                 class="quick-time-input-hidden" 
                 type="time" 
+                step="300"
                 aria-label="時間を設定"
                 title="時間を設定"
                 onchange="if(typeof updateQuickTimeDisplay === 'function') updateQuickTimeDisplay(this.value)"
@@ -183,7 +184,7 @@
       <label class="form-label">期限（任意）</label>
       <div style="display: flex; gap: 8px;">
         <input id="task-date-input" class="form-input" type="date" style="flex: 1;" aria-label="期限日">
-        <input id="task-time-input" class="form-input" type="time" style="width: 120px;" aria-label="期限時間">
+        <input id="task-time-input" class="form-input" type="time" step="300" style="width: 120px;" aria-label="期限時間">
       </div>
     </div>
 
