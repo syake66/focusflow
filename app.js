@@ -442,7 +442,7 @@ function renderTaskCard(task, isSchedule = false) {
   const isOverdue = task.deadline && new Date(task.deadline) < new Date() && !task.completed;
 
   let timeHtml = '';
-  if (isSchedule && task.deadline) {
+  if (task.deadline) {
     const d = new Date(task.deadline);
     const hh = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
