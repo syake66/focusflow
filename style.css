@@ -324,25 +324,8 @@ body {
 
 /* チェックボックス */
 .task-check {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  background: transparent;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
+  margin-top: 2px;
 }
-.task-check:hover { border-color: var(--accent-purple); }
-.task-check.checked {
-  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-  border-color: transparent;
-}
-.task-check.checked::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
 
 .task-content { flex: 1; min-width: 0; }
 
