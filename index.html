@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FocusFlow">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=1.1.5">
+  <link rel="stylesheet" href="style.css">
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -162,7 +162,10 @@
 <div id="add-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <h2 id="modal-title-text" class="modal-title">新しいタスク</h2>
+    <div class="modal-header">
+      <h2 id="modal-title-text" class="modal-title">新しいタスク</h2>
+      <button type="button" class="modal-close-btn" onclick="closeAddModal()" aria-label="閉じる">✕</button>
+    </div>
 
     <!-- タイトル -->
     <div class="form-group">
@@ -234,7 +237,7 @@
 <div id="postpone-modal" class="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <h2 class="modal-title">😅 後回しにしちゃう</h2>
+    <h2 class="modal-title">後回しにしちゃう</h2>
     <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">
       「<span id="postpone-task-name" style="color:var(--text-primary);font-weight:600;"></span>」<br>
       どれくらい後回しにする？
@@ -287,13 +290,13 @@
         <span id="detail-task-priority" class="detail-info-value"></span>
       </div>
       <div class="detail-info-row" id="detail-postpone-row">
-        <span class="detail-info-label">😅 後回し</span>
+        <span class="detail-info-label">後回し</span>
         <span id="detail-postpone-count" class="detail-info-value" style="color:var(--accent-pink);"></span>
       </div>
     </div>
 
     <button id="detail-postpone-btn" class="postpone-btn-large">
-      😅 後回しにしちゃう
+      後回しにしちゃう
     </button>
 
     <div class="detail-footer">
@@ -307,7 +310,10 @@
 <div id="profile-modal" class="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <h2 class="modal-title">👤 プロフィール設定</h2>
+    <div class="modal-header">
+      <h2 class="modal-title">プロフィール設定</h2>
+      <button type="button" class="modal-close-btn" onclick="closeProfileModal()" aria-label="閉じる">✕</button>
+    </div>
     <div class="form-group" style="margin-top: 10px;">
       <label class="form-label">表示名</label>
       <input id="profile-name-input" class="form-input" type="text" placeholder="お名前を入力">
