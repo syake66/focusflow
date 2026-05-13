@@ -58,6 +58,7 @@
 
   <!-- 日付表示 -->
   <div class="date-section">
+    <div id="user-display" class="user-display" onclick="openProfileModal()"></div>
     <div id="date-today" class="date-today"></div>
     <div id="date-label" class="date-label"></div>
   </div>
@@ -284,6 +285,23 @@
     <div class="detail-footer">
       <button id="detail-edit-btn" class="btn-primary">✏️ 編集する</button>
       <button class="btn-danger" onclick="closeTaskDetail()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== プロフィールモーダル ===== -->
+<div id="profile-modal" class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">👤 プロフィール設定</h2>
+    <div class="form-group" style="margin-top: 10px;">
+      <label class="form-label">表示名</label>
+      <input id="profile-name-input" class="form-input" type="text" placeholder="お名前を入力">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+      <button class="btn-primary" onclick="saveProfile()">保存する</button>
+      <button class="btn-danger" onclick="closeProfileModal()">キャンセル</button>
+      <button class="btn-postpone" style="margin-top: 10px; opacity: 0.6;" onclick="logout()">ログアウト</button>
     </div>
   </div>
 </div>

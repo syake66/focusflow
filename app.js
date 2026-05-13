@@ -36,6 +36,9 @@ auth.onAuthStateChanged(async (user) => {
     loginScreen.style.display = 'none';
     appWrapper.style.display = 'block';
 
+    // ユーザー情報の初期化（Firestoreから名前を取得）
+    await initUserProfile();
+
     // データの読み込みと移行チェック
     await syncTasks();
     
@@ -48,6 +51,54 @@ auth.onAuthStateChanged(async (user) => {
     appWrapper.style.display = 'none';
   }
 });
+
+/** ユーザープロフィールを初期化・取得する */
+async function initUserProfile() {
+  if (!currentUser) return;
+  
+  const userRef = db.collection('users').doc(currentUser.uid);
+  const doc = await userRef.get();
+  
+  let displayName = currentUser.displayName || "ユーザー";
+  
+  if (doc.exists && doc.data().username) {
+    displayName = doc.data().username;
+  } else {
+    // 初期値を保存しておく
+    await userRef.set({ username: displayName }, { merge: true });
+  }
+  
+  updateUserDisplay(displayName);
+}
+
+/** ユーザー名の表示を更新する */
+function updateUserDisplay(name) {
+  document.getElementById('user-display').textContent = `${name} さん`;
+}
+
+/** プロフィールモーダルを開く */
+function openProfileModal() {
+  if (!currentUser) return;
+  const currentName = document.getElementById('user-display').textContent.replace(' さん', '');
+  document.getElementById('profile-name-input').value = currentName;
+  document.getElementById('profile-modal').classList.add('show');
+}
+
+/** プロフィールモーダルを閉じる */
+function closeProfileModal() {
+  document.getElementById('profile-modal').classList.remove('show');
+}
+
+/** プロフィールを保存する */
+async function saveProfile() {
+  const newName = document.getElementById('profile-name-input').value.trim();
+  if (!newName || !currentUser) return;
+  
+  await db.collection('users').doc(currentUser.uid).set({ username: newName }, { merge: true });
+  updateUserDisplay(newName);
+  closeProfileModal();
+  showBanner('👤 プロフィール更新', 'お名前を変更しました。');
+}
 
 // Googleログイン実行
 async function signInWithGoogle() {
@@ -404,6 +455,7 @@ function renderTaskCard(task, isSchedule = false) {
             <div class="task-title">${escHtml(task.title)}</div>
             ${timeHtml}
           </div>
+          ${task.note ? `<div class="task-note-snippet">${escHtml(task.note.substring(0, 30))}${task.note.length > 30 ? '...' : ''}</div>` : ''}
           <div class="task-meta">
             ${dl && !isSchedule ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
             ${task.postponeCount > 0 ? `<span class="postpone-count">後回し×${task.postponeCount}</span>` : ''}
@@ -841,6 +893,7 @@ function switchTab(tabId) {
 /** 現在のタブを描画する */
 function renderCurrentTab() {
   if (currentTab === 'today') renderToday();
+  else if (currentTab === 'history') renderHistory();
   else if (currentTab === 'schedule') renderSchedule();
 }
 
@@ -980,6 +1033,9 @@ function setupEventListeners() {
   });
   document.getElementById('detail-modal').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeTaskDetail();
+  });
+  document.getElementById('profile-modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeProfileModal();
   });
 }
 
