@@ -764,12 +764,20 @@ function saveTask() {
     return;
   }
 
+  let dateFinal = dateRaw;
+  // 日付がなくて時間がある場合は、今日の日付を補完
+  if (!dateFinal && timeRaw) {
+    const today = new Date();
+    dateFinal = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  }
+
   let deadlineISO = null;
-  if (dateRaw) {
+  if (dateFinal) {
     if (timeRaw) {
-      deadlineISO = new Date(`${dateRaw}T${timeRaw}`).toISOString();
+      // 秒まで明示してISOパースを安定させる
+      deadlineISO = new Date(`${dateFinal}T${timeRaw}:00`).toISOString();
     } else {
-      deadlineISO = new Date(`${dateRaw}T23:59:00`).toISOString();
+      deadlineISO = new Date(`${dateFinal}T23:59:00`).toISOString();
     }
   }
 
