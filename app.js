@@ -327,10 +327,13 @@ function renderToday() {
   const todayTasks = allTasks.filter(t => 
     (!t.completed && isToday(t)) || isCompletedToday(t)
   ).sort((a, b) => {
+    // 1. 未完了を優先
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    // 2. 優先度順
     const pOrder = { high: 0, mid: 1, low: 2 };
     if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority];
-    // 完了済みのものは一番下へ
-    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    // 3. 期限順
+    if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
     return 0;
   });
 
@@ -453,6 +456,7 @@ function renderTaskCard(task, isSchedule = false) {
   const iconCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
   const iconChecked = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
   const iconTrash = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`;
+  const iconNote = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-left: 6px; vertical-align: middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
 
   return `
     <div class="task-card ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}"
@@ -466,10 +470,12 @@ function renderTaskCard(task, isSchedule = false) {
         </div>
         <div class="task-content">
           <div class="task-title-row">
-            <div class="task-title">${escHtml(task.title)}</div>
+            <div class="task-title">
+              ${escHtml(task.title)}
+              ${task.note ? iconNote : ''}
+            </div>
             ${timeHtml}
           </div>
-          ${task.note ? `<div class="task-note-snippet">${escHtml(task.note.substring(0, 30))}${task.note.length > 30 ? '...' : ''}</div>` : ''}
           <div class="task-meta">
             ${dl && !isSchedule ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
             ${task.postponeCount > 0 ? `<span class="postpone-count">後回し×${task.postponeCount}</span>` : ''}

@@ -14,8 +14,8 @@
   --accent-blue: #5b8af0;
   --accent-pink: #e91e8c;
   --priority-high: #e53935;
-  --priority-mid: #f57c00;
-  --priority-low: #388e3c;
+  --priority-mid: #ffd600;
+  --priority-low: #b2ff59;
   --text-primary: #1a1640;
   --text-secondary: #5c5880;
   --text-muted: #9e99bb;
@@ -373,9 +373,14 @@ body {
 .task-card[data-priority="mid"]::before { background: var(--priority-mid); }
 .task-card[data-priority="low"]::before { background: var(--priority-low); }
 
+/* 優先度別のカード背景微調整（オプション） */
+.task-card[data-priority="high"] { background: rgba(229, 57, 53, 0.04); }
+.task-card[data-priority="mid"] { background: rgba(255, 214, 0, 0.06); }
+.task-card[data-priority="low"] { background: rgba(178, 255, 89, 0.06); }
+
 .task-card.completed { 
   opacity: 0.5; 
-  background: rgba(255, 255, 255, 0.4); /* 完了したものは白っぽく */
+  background: rgba(255, 255, 255, 0.4) !important; /* 完了したものは白っぽく */
   border-color: transparent;
 }
 .task-card.completed .task-title { text-decoration: line-through; color: var(--text-muted); }

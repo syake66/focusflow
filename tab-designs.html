@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusFlow - Tab Designs</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --bg-color: #f3f4f6;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --accent-color: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.4);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 40px 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Common icons for demonstration */
+    .icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .history-icon {
+      margin-right: 0;
+    }
+    
+    .tab-text {
+      display: inline-block;
+      vertical-align: middle;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* =========================================
+       Design 1: Modern Segmented Control (iOS Inspired, Soft Pop)
+       ========================================= */
+    .design-1 {
+      background: #e5e7eb;
+      padding: 4px;
+      border-radius: 16px;
+      display: flex;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .design-1 button {
+      background: none;
+      border: none;
+      padding: 12px 0;
+      color: var(--text-muted);
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .design-1 button.active {
+      color: var(--text-main);
+    }
+
+    /* The sliding background */
+    .d1-slider {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      z-index: 1;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Layout specific flex ratios */
+    .d1-today, .d1-schedule { flex: 4; }
+    .d1-history { flex: 2; }
+
+
+    /* =========================================
+       Design 2: Floating Glassmorphism Pill
+       ========================================= */
+    .design-2-wrapper {
+      background: linear-gradient(135deg, #a78bfa 0%, #3b82f6 100%);
+      padding: 40px 20px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    }
+    
+    .design-2 h2 { color: rgba(255,255,255,0.9); }
+
+    .design-2 {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px;
+      border-radius: 100px;
+      display: flex;
+      position: relative;
+    }
+
+    .design-2 button {
+      background: none;
+      border: none;
+      padding: 14px 0;
+      color: rgba(255, 255, 255, 0.7);
+      border-radius: 100px;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .design-2 button.active {
+      color: #1f2937;
+    }
+
+    .d2-slider {
+      position: absolute;
+      top: 6px;
+      bottom: 6px;
+      background: #ffffff;
+      border-radius: 100px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      z-index: 1;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Layout specific flex ratios */
+    .d2-today, .d2-schedule { flex: 4; }
+    .d2-history { flex: 2; }
+
+
+    /* =========================================
+       Design 3: Minimalist Animated Underline
+       ========================================= */
+    .design-3 {
+      display: flex;
+      position: relative;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+
+    .design-3 button {
+      background: none;
+      border: none;
+      padding: 10px 0;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .design-3 button:hover {
+      color: var(--text-main);
+      background: rgba(243, 244, 246, 0.5);
+      border-radius: 8px;
+    }
+
+    .design-3 button.active {
+      color: var(--accent-color);
+    }
+
+    .d3-slider {
+      position: absolute;
+      bottom: -2px; /* cover the border bottom */
+      height: 2px;
+      background: var(--accent-color);
+      border-radius: 2px 2px 0 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 -2px 10px var(--accent-glow);
+    }
+
+    /* Layout specific flex ratios */
+    .d3-today, .d3-schedule { flex: 4; }
+    .d3-history { flex: 2; }
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Design 1 -->
+  <div class="container">
+    <h2>Design 1: Segmented Control (Clean & Soft)</h2>
+    <nav class="design-1" id="nav1">
+      <div class="d1-slider" id="slider1"></div>
+      <button class="d1-today active" onclick="setTab(1, 0, 4)">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="tab-text">今日</span>
+      </button>
+      <button class="d1-schedule" onclick="setTab(1, 1, 4)">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <span class="tab-text">予定</span>
+      </button>
+      <button class="d1-history" onclick="setTab(1, 2, 2)">
+        <svg class="icon history-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Design 2 -->
+  <div class="container design-2-wrapper">
+    <div class="design-2-content">
+      <h2>Design 2: Glassmorphism Pill (Vibrant)</h2>
+      <nav class="design-2" id="nav2">
+        <div class="d2-slider" id="slider2"></div>
+        <button class="d2-today active" onclick="setTab(2, 0, 4)">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span class="tab-text">今日</span>
+        </button>
+        <button class="d2-schedule" onclick="setTab(2, 1, 4)">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span class="tab-text">予定</span>
+        </button>
+        <button class="d2-history" onclick="setTab(2, 2, 2)">
+          <svg class="icon history-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Design 3 -->
+  <div class="container">
+    <h2>Design 3: Animated Underline (Minimalist)</h2>
+    <nav class="design-3" id="nav3">
+      <div class="d3-slider" id="slider3"></div>
+      <button class="d3-today active" onclick="setTab(3, 0, 4)">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="tab-text">今日</span>
+      </button>
+      <button class="d3-schedule" onclick="setTab(3, 1, 4)">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <span class="tab-text">予定</span>
+      </button>
+      <button class="d3-history" onclick="setTab(3, 2, 2)">
+        <svg class="icon history-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // Total flex parts = 4 + 4 + 2 = 10
+    const TOTAL_FLEX = 10;
+    
+    // Initial setup for sliders
+    function initSlider(designNum) {
+      const nav = document.getElementById(`nav${designNum}`);
+      const slider = document.getElementById(`slider${designNum}`);
+      const buttons = nav.querySelectorAll('button');
+      
+      // Default to first tab (index 0, flex 4)
+      updateSlider(slider, 0, 4, TOTAL_FLEX);
+    }
+
+    function updateSlider(slider, index, flex, totalFlex) {
+      // Calculate offset percentage and width percentage based on flex
+      let offsetFlex = 0;
+      if (index === 1) offsetFlex = 4;
+      if (index === 2) offsetFlex = 8;
+      
+      const widthPercent = (flex / totalFlex) * 100;
+      const leftPercent = (offsetFlex / totalFlex) * 100;
+      
+      slider.style.width = `${widthPercent}%`;
+      slider.style.left = `${leftPercent}%`;
+    }
+
+    function setTab(designNum, index, flex) {
+      const nav = document.getElementById(`nav${designNum}`);
+      const slider = document.getElementById(`slider${designNum}`);
+      const buttons = nav.querySelectorAll('button');
+      
+      buttons.forEach(btn => btn.classList.remove('active'));
+      buttons[index].classList.add('active');
+      
+      updateSlider(slider, index, flex, TOTAL_FLEX);
+    }
+
+    window.onload = () => {
+      initSlider(1);
+      initSlider(2);
+      initSlider(3);
+      
+      // Handle window resize if needed (percentage based handles it mostly)
+    };
+  </script>
+</body>
+</html>
