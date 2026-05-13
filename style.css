@@ -238,21 +238,24 @@ body {
 .quick-time-icon-wrapper {
   position: absolute;
   right: 8px;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(124, 108, 240, 0.08);
+  background-color: rgba(124, 108, 240, 0.08);
+  /* アイコンを背景画像として指定（色指定をrgbにして互換性を向上） */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(92, 88, 128)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpolyline points='12 6 12 12 16 14'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px;
   border-radius: 8px;
-  color: var(--text-secondary);
   transition: var(--transition);
   cursor: pointer;
   z-index: 10;
 }
 .quick-time-icon-wrapper:hover {
-  background: rgba(124, 108, 240, 0.15);
-  color: var(--accent-purple);
+  background-color: rgba(124, 108, 240, 0.15);
 }
 
 .quick-clock-icon {
