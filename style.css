@@ -204,6 +204,31 @@ body {
   box-shadow: 0 0 0 3px rgba(124, 108, 240, 0.12);
 }
 
+.quick-time-input-inline {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(124, 108, 240, 0.08);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  padding: 6px;
+  transition: var(--transition);
+}
+.quick-time-input-inline:hover {
+  background: rgba(124, 108, 240, 0.15);
+  color: var(--accent-purple);
+}
+.quick-time-input-inline:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(124, 108, 240, 0.15);
+}
+
 .quick-notif-check {
   display: flex;
   align-items: center;

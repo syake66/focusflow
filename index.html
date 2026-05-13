@@ -98,24 +98,27 @@
     <section class="quick-add-section">
       <form id="quick-add-form" autocomplete="off">
         <div class="quick-add-form">
-          <input
-            id="quick-input"
-            class="quick-add-input"
-            type="text"
-            placeholder="今日やることを追加…"
-            maxlength="100"
-            aria-label="今日のタスクを入力"
-          >
+          <div style="position: relative; flex: 1; display: flex; align-items: center;">
+            <input
+              id="quick-input"
+              class="quick-add-input"
+              type="text"
+              placeholder="今日やることを追加…"
+              maxlength="100"
+              aria-label="今日のタスクを入力"
+              style="padding-right: 90px; width: 100%;"
+            >
+            <input 
+              id="quick-time-input" 
+              class="quick-time-input-inline" 
+              type="time" 
+              aria-label="時間を設定"
+              title="時間を設定"
+            >
+          </div>
           <button type="submit" class="quick-add-btn" aria-label="追加">＋</button>
         </div>
-        <div class="quick-add-sub">
-          <span class="quick-time-label">⏰ 時間（任意）</span>
-          <input id="quick-time-input" class="quick-time-input" type="time" aria-label="時間を設定">
-          <label class="quick-notif-check">
-            <input type="checkbox" id="quick-notif-1h" checked>
-            1時間前に通知
-          </label>
-        </div>
+        <input type="checkbox" id="quick-notif-1h" checked hidden>
       </form>
     </section>
 
