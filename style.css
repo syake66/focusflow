@@ -214,9 +214,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(124, 108, 240, 0.15);
+  background: rgba(124, 108, 240, 0.08);
   border-radius: 8px;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   transition: var(--transition);
   cursor: pointer;
   z-index: 10;
