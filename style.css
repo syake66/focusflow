@@ -410,7 +410,6 @@ body {
 }
 
 .tab-btn {
-  flex: 1;
   padding: 10px;
   border: none;
   border-radius: var(--radius-sm);
