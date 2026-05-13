@@ -391,7 +391,30 @@ body {
 
 /* チェックボックス */
 .task-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 2px solid var(--accent-purple);
+  opacity: 0.6;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 2px;
+  position: relative;
+}
+.task-check.checked {
+  background: var(--accent-purple);
+  opacity: 1;
+}
+.task-check.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .task-content { flex: 1; min-width: 0; }
@@ -410,6 +433,14 @@ body {
   color: var(--text-primary);
   line-height: 1.4;
   word-break: break-word;
+}
+
+.task-time-inline {
+  font-size: 0.8rem;
+  color: var(--accent-purple);
+  font-weight: 700;
+  margin-left: 8px;
+  opacity: 0.8;
 }
 
 .schedule-time {
@@ -509,15 +540,16 @@ body {
 
 .task-deadline {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--accent-purple);
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 3px;
 }
 
-.deadline-urgent { color: #8a8a8a !important; font-weight: 500; }
-.deadline-soon { color: #a0a0a0 !important; }
-.deadline-ok { color: #b0b0b0 !important; }
+.deadline-urgent { color: var(--accent-purple) !important; }
+.deadline-soon { color: var(--accent-purple) !important; opacity: 0.8; }
+.deadline-ok { color: var(--accent-purple) !important; opacity: 0.6; }
 
 .postpone-count {
   font-size: 0.7rem;
