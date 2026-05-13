@@ -3,7 +3,7 @@
    バックグラウンド通知・オフライン対応を担う
    ===================================================== */
 
-const CACHE_NAME = 'focusflow-v23';
+const CACHE_NAME = 'focusflow-v24';
 // キャッシュするアセット一覧
 const ASSETS_TO_CACHE = [
   '/',
