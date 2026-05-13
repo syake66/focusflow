@@ -243,29 +243,34 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(124, 108, 240, 0.05); /* さらに薄く */
+  background-color: rgba(124, 108, 240, 0.05);
   border-radius: 8px;
-  color: #b0aec5; /* さらに薄いアイコン色 */
+  color: #b0aec5;
   transition: var(--transition);
   cursor: pointer;
   z-index: 10;
-}
-
-.quick-time-display {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent-purple);
-  pointer-events: none;
 }
 
-.quick-time-display.has-value {
-  padding: 0;
+.quick-time-display-overlay {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-purple);
+  color: white;
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: none;
+  pointer-events: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quick-time-display-overlay.has-value {
+  display: block;
 }
 
 .quick-clock-icon {

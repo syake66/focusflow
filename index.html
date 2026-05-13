@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FocusFlow">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=1.0.9">
+  <link rel="stylesheet" href="style.css?v=1.1.0">
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -108,12 +108,11 @@
               aria-label="今日のタスクを入力"
             >
             <div class="quick-time-icon-wrapper" id="quick-time-wrapper">
-              <div id="quick-time-display" class="quick-time-display">
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quick-clock-icon">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quick-clock-icon">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <div id="quick-time-display" class="quick-time-display-overlay"></div>
               <input 
                 id="quick-time-input" 
                 class="quick-time-input-hidden" 
