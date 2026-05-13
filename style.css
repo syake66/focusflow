@@ -509,15 +509,15 @@ body {
 
 .task-deadline {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 3px;
 }
 
-.deadline-urgent { color: var(--priority-high) !important; font-weight: 700; }
-.deadline-soon { color: var(--priority-mid) !important; font-weight: 600; }
-.deadline-ok { color: var(--priority-low) !important; }
+.deadline-urgent { color: #8a8a8a !important; font-weight: 500; }
+.deadline-soon { color: #a0a0a0 !important; }
+.deadline-ok { color: #b0b0b0 !important; }
 
 .postpone-count {
   font-size: 0.7rem;

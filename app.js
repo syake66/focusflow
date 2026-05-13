@@ -441,22 +441,11 @@ function renderTaskCard(task, isSchedule = false) {
   const dl = task.deadline ? getDeadlineLabel(task.deadline) : null;
   const isOverdue = task.deadline && new Date(task.deadline) < new Date() && !task.completed;
 
-  let timeHtml = '';
-  if (task.deadline) {
-    const d = new Date(task.deadline);
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-    // 23:59は未設定扱い
-    if (hh !== '23' || mm !== '59') {
-      timeHtml = `<span class="schedule-time">${hh}:${mm}</span>`;
-    }
-  }
-
   // アイコン定義
   const iconCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
   const iconChecked = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
   const iconTrash = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`;
-  const iconNote = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.15; margin-left: 6px; vertical-align: middle;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-10.3 8.38 8.38 0 0 1 3.8.9L21 3l-1.1 4.7a8.38 8.38 0 0 1 .9 3.8z"/></svg>`;
+  const iconNote = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-left: 6px; vertical-align: middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
 
   return `
     <div class="task-card ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}"
@@ -474,7 +463,6 @@ function renderTaskCard(task, isSchedule = false) {
               ${escHtml(task.title)}
               ${task.note ? iconNote : ''}
             </div>
-            ${timeHtml}
           </div>
           <div class="task-meta">
             ${dl && !isSchedule ? `<span class="task-deadline ${dl.cls}">${dl.text}</span>` : ''}
