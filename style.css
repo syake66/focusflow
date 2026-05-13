@@ -358,12 +358,9 @@ body {
 }
 
 .task-card.newly-added {
-  animation: fadeInQuick 0.25s ease-out forwards;
-}
-
-@keyframes fadeInQuick {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  /* 点滅を避けるためアニメーションを削除し、一瞬だけ背景色を明るくする等の控えめな演出に変更 */
+  background: var(--bg-card-hover);
+  border-color: var(--accent-purple);
 }
 
 @keyframes fadeOut {
