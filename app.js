@@ -20,6 +20,19 @@ const db = firebase.firestore();
 
 let currentUser = null;
 let currentTasks = []; // 現在のタスクリスト（メモリ保持用）
+let isSyncing = true;  // 同期中フラグ（初期値true）
+
+/** 
+ * 同期中のスケルトン画面を表示するためのヘルパー 
+ */
+function renderSkeleton() {
+  const skeletonHtml = `
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+  `;
+  document.getElementById('today-task-list').innerHTML = skeletonHtml;
+}
 
 /* ---- 認証・初期化ロジック ---- */
 
@@ -36,14 +49,13 @@ auth.onAuthStateChanged(async (user) => {
     loginScreen.style.display = 'none';
     appWrapper.style.display = 'block';
 
-    // ユーザー情報の初期化（Firestoreから名前を取得）
-    await initUserProfile();
-
-    // データの読み込みと移行チェック
-    await syncTasks();
-    
-    // 通知スケジュールを再設定
-    rescheduleAllNotifications();
+    // 並列実行で高速化
+    Promise.all([
+      initUserProfile(),
+      syncTasks()
+    ]).then(() => {
+      rescheduleAllNotifications();
+    });
   } else {
     currentUser = null;
     currentTasks = [];
@@ -126,30 +138,34 @@ document.getElementById('google-login-btn').addEventListener('click', signInWith
 async function syncTasks() {
   if (!currentUser) return;
 
-  const docRef = db.collection('users').doc(currentUser.uid);
-  const doc = await docRef.get();
+  isSyncing = true;
+  renderSkeleton(); // 同期開始時にスケルトンを表示
 
-  // 1. LocalStorageに古いデータがあるか確認（移行用）
-  const localData = localStorage.getItem('focusflow_tasks');
-  
-  if (!doc.exists && localData) {
-    // DBにデータがなく、ローカルにデータがある場合 -> 初回移行
-    console.log("Migrating local data to Firestore...");
-    const tasks = JSON.parse(localData);
-    await docRef.set({ tasks: tasks });
-    currentTasks = tasks;
-    // 移行完了後はLocalデータを消すか、フラグを立てる（ここでは安全のため名前を変えて残す）
-    localStorage.setItem('focusflow_migrated_backup', localData);
-    localStorage.removeItem('focusflow_tasks');
-  } else if (doc.exists) {
-    // DBにデータがある場合
-    currentTasks = doc.data().tasks || [];
-  } else {
-    // どちらも空の場合
-    currentTasks = [];
+  try {
+    const docRef = db.collection('users').doc(currentUser.uid);
+    const doc = await docRef.get();
+
+    // 1. LocalStorageに古いデータがあるか確認（移行用）
+    const localData = localStorage.getItem('focusflow_tasks');
+    
+    if (!doc.exists && localData) {
+      console.log("Migrating local data to Firestore...");
+      const tasks = JSON.parse(localData);
+      await docRef.set({ tasks: tasks });
+      currentTasks = tasks;
+      localStorage.setItem('focusflow_migrated_backup', localData);
+      localStorage.removeItem('focusflow_tasks');
+    } else if (doc.exists) {
+      currentTasks = doc.data().tasks || [];
+    } else {
+      currentTasks = [];
+    }
+  } catch (error) {
+    console.error("Sync error:", error);
+  } finally {
+    isSyncing = false;
+    renderCurrentTab();
   }
-
-  renderCurrentTab();
 }
 
 /** 現在のタスクリストを取得（メモリから） */
@@ -321,6 +337,7 @@ let postponingTaskId = null;
 
 /** ホーム（今日）タブを描画する */
 function renderToday() {
+  if (isSyncing) return; // 同期中はスケルトンを表示し続ける
   const allTasks = loadTasks();
   
   // 今日の対象タスク：「未完了で今日が期限（または期限なし）」または「今日完了したタスク」
@@ -1030,14 +1047,12 @@ function updateDateDisplay() {
 /* ---- 初期化 ---- */
 
 /** アプリを初期化する */
-async function init() {
+function init() {
   updateDateDisplay();
 
-  // 通知許可をリクエスト
-  await requestNotificationPermission();
-
-  // Service Worker登録
-  await registerServiceWorker();
+  // 描画に必須でないものはバックグラウンドで実行
+  requestNotificationPermission();
+  registerServiceWorker();
 
   // 1分ごとに期限チェック（表示更新）
   setInterval(renderCurrentTab, 60 * 1000);
