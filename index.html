@@ -33,6 +33,20 @@
     <p class="login-warning">
       ⚠️ LINEやInstagram等のアプリ内ブラウザではログインできません。右上のメニューから「Safari/ブラウザで開く」を選択してください。
     </p>
+    <div class="login-legal">
+      <a href="#" onclick="showPrivacy()">プライバシーポリシー</a>
+      <span>|</span>
+      <a href="#" onclick="showTerms()">利用規約</a>
+    </div>
+  </div>
+</div>
+
+<!-- 簡易ポリシー表示用（Googleの巡回対策） -->
+<div id="legal-modal" class="modal-overlay" style="z-index: 10000;">
+  <div class="modal-sheet" style="max-width: 600px; padding: 40px;">
+    <h2 id="legal-title" class="modal-title"></h2>
+    <div id="legal-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); max-height: 60vh; overflow-y: auto;"></div>
+    <button class="btn-primary" style="margin-top: 20px;" onclick="closeLegal()">閉じる</button>
   </div>
 </div>
 

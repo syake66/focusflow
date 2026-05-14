@@ -1377,6 +1377,22 @@ body {
   text-align: left;
 }
 
+.login-legal {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.login-legal a {
+  color: var(--accent-purple);
+  text-decoration: none;
+}
+.login-legal a:hover {
+  text-decoration: underline;
+}
+
 .login-btn {
   width: 100%;
   padding: 16px;

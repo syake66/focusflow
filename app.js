@@ -1124,3 +1124,36 @@ function setupEventListeners() {
 
 // アプリ起動
 document.addEventListener('DOMContentLoaded', init);
+
+/** 簡易プライバシーポリシーを表示 */
+function showPrivacy() {
+  document.getElementById('legal-title').textContent = "プライバシーポリシー";
+  document.getElementById('legal-body').innerHTML = `
+    <p>FocusFlow（以下「本アプリ」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めます。</p>
+    <h3 style="margin-top:15px; color:var(--text-primary);">1. 収集する情報</h3>
+    <p>本アプリは、Googleログインを通じて、ユーザーの氏名、メールアドレス、プロフィール画像を取得します。これらの情報は、アプリ内でのユーザー識別およびパーソナライズのためにのみ使用されます。</p>
+    <h3 style="margin-top:15px; color:var(--text-primary);">2. データの利用</h3>
+    <p>ユーザーが作成したタスクデータは、Firebaseのデータベースに保存され、ユーザー本人以外がアクセスすることはできません。</p>
+    <h3 style="margin-top:15px; color:var(--text-primary);">3. サードパーティサービス</h3>
+    <p>本アプリは、認証およびデータ保存のためにFirebaseを使用しています。</p>
+  `;
+  document.getElementById('legal-modal').classList.add('show');
+}
+
+/** 簡易利用規約を表示 */
+function showTerms() {
+  document.getElementById('legal-title').textContent = "利用規約";
+  document.getElementById('legal-body').innerHTML = `
+    <p>FocusFlow（以下「本アプリ」）をご利用いただく際の規約です。</p>
+    <h3 style="margin-top:15px; color:var(--text-primary);">1. サービスの利用</h3>
+    <p>本アプリは、個人のタスク管理を支援することを目的としています。不正な目的での利用を禁止します。</p>
+    <h3 style="margin-top:15px; color:var(--text-primary);">2. 免責事項</h3>
+    <p>本アプリの利用により生じた損害について、開発者は一切の責任を負いません。自己責任でご利用ください。</p>
+  `;
+  document.getElementById('legal-modal').classList.add('show');
+}
+
+/** リーガルモーダルを閉じる */
+function closeLegal() {
+  document.getElementById('legal-modal').classList.remove('show');
+}
