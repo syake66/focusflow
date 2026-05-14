@@ -117,7 +117,13 @@ async function saveProfile() {
 async function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   try {
-    await auth.signInWithPopup(provider);
+    // モバイル環境（LINE等からのブラウザ起動含む）ではリダイレクトの方が安定する
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      await auth.signInWithRedirect(provider);
+    } else {
+      await auth.signInWithPopup(provider);
+    }
   } catch (error) {
     console.error("Login failed:", error);
     if (error.code === 'auth/unauthorized-domain') {
