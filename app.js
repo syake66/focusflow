@@ -126,6 +126,9 @@ async function saveProfile() {
 // Googleログイン実行
 async function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
+  // アカウント選択を強制することで、認証の不整合を防ぐ
+  provider.setCustomParameters({ prompt: 'select_account' });
+  
   try {
     // モバイル環境（LINE等からのブラウザ起動含む）ではリダイレクトの方が安定する
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
