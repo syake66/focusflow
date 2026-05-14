@@ -36,6 +36,16 @@ function renderSkeleton() {
 
 /* ---- 認証・初期化ロジック ---- */
 
+// リダイレクト後の結果を確認
+auth.getRedirectResult().catch((error) => {
+  console.error("Redirect login error:", error);
+  if (error.code === 'auth/unauthorized-domain') {
+    alert("【ドメイン未許可】Firebaseコンソールで現在のURLを「承認済みドメイン」に追加してください。");
+  } else if (error.code !== 'auth/popup-closed-by-user') {
+    alert("ログインエラー (" + error.code + "): " + error.message);
+  }
+});
+
 // ログイン状態の監視
 auth.onAuthStateChanged(async (user) => {
   const loginScreen = document.getElementById('login-screen');
