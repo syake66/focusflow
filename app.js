@@ -1123,7 +1123,18 @@ function setupEventListeners() {
 }
 
 // アプリ起動
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  
+  // Googleの審査用：URLパラメータで直接ポリシーを表示できるようにする
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get('page');
+  if (page === 'privacy') {
+    showPrivacy();
+  } else if (page === 'terms') {
+    showTerms();
+  }
+});
 
 /** 簡易プライバシーポリシーを表示 */
 function showPrivacy() {
