@@ -120,7 +120,13 @@ async function signInWithGoogle() {
     await auth.signInWithPopup(provider);
   } catch (error) {
     console.error("Login failed:", error);
-    alert("ログインに失敗しました。");
+    if (error.code === 'auth/unauthorized-domain') {
+      alert("このURLからのログインが許可されていません。Firebaseコンソールの「承認済みドメイン」に現在のドメインを追加してください。");
+    } else if (error.code === 'auth/popup-closed-by-user') {
+      // ユーザーが閉じた場合は何もしない
+    } else {
+      alert("ログインに失敗しました: " + error.message);
+    }
   }
 }
 
