@@ -5,7 +5,7 @@
 // Firebase 設定
 const firebaseConfig = {
   apiKey: "AIzaSyCRg2HjKyWZeqh4wZuLevO8BSmNHpQ1kfI",
-  authDomain: "focus-21fb0.firebaseapp.com",
+  authDomain: "focusflow-seven-sepia.vercel.app",
   projectId: "focus-21fb0",
   storageBucket: "focus-21fb0.firebasestorage.app",
   messagingSenderId: "163433322038",
